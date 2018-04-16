@@ -105,7 +105,8 @@ class HIVTreatment(gym.Env):
 
         self.episode_data[:-1, self.t] = self.state
         self.episode_data[-1, self.t - 1] = a
-        return reward, ns, False, self.possibleActions()
+        return ns, reward, self.t >= self.episodeCap, self.possibleActions()
+        # return ns, reward, False, self.possibleActions()
 
     def possibleActions(self):
         return np.arange(4)
@@ -114,7 +115,8 @@ class HIVTreatment(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
 
     def reset(self):
-        return self.state
+    	self.s0()
+    	return self.state
 
     def s0(self):
         self.t = 0

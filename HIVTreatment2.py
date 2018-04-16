@@ -157,7 +157,7 @@ class HIVTreatment2(gym.Env):
         r.set_initial_value(self.state, t0).set_f_params(deriv_args)
         self.state = r.integrate(self.dt)
         reward = self.calc_reward(action=action)
-        return reward, self.observe(), self.is_done()
+        return self.observe(), reward,  self.is_done()
 
 def dsdt(t, s, params):
     """Wrapper for system derivative with respect to time"""
