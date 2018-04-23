@@ -84,6 +84,7 @@ class HIVTreatment(gym.Env):
         self.action_space = spaces.Discrete(4)
         self.s0()
         self.state_space_dims = len(self.statespace_limits)
+        self.observation_space = self.state_space_dims
 
     def isTerminal(self):
         return False
