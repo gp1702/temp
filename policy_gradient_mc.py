@@ -257,7 +257,7 @@ def main():
     monitor_dir = './' + filename + '_' + str(datetime.now())
     env = wrappers.Monitor(env, monitor_dir)
 
-  N = 10000
+  N = 40000
   totalrewards = np.empty(N)
   costs = np.empty(N)
   for n in range(N):
