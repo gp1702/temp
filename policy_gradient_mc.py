@@ -1,4 +1,10 @@
 from __future__ import print_function, division
+import GPUtil
+import datetime
+import os
+DEVICE_ID_LIST = GPUtil.getFirstAvailable()
+DEVICE_ID = DEVICE_ID_LIST[0]
+os.environ["CUDA_VISIBLE_DEVICES"] = str(DEVICE_ID)
 from builtins import range
 import gym
 import os
@@ -17,7 +23,7 @@ def plot_running_avg(totalrewards):
         running_avg[t] = totalrewards[max(0, t-100):(t+1)].mean()
     plt.plot(running_avg)
     plt.title("Running Average")
-    plt.show()
+    plt.savefig("Average_return_mc.pdf")
 
 
 # so you can test different architectures
@@ -257,7 +263,7 @@ def main():
     monitor_dir = './' + filename + '_' + str(datetime.now())
     env = wrappers.Monitor(env, monitor_dir)
 
-  N = 10000
+  N = 50000
   totalrewards = np.empty(N)
   costs = np.empty(N)
   for n in range(N):
@@ -270,9 +276,7 @@ def main():
   print("total steps:", totalrewards.sum())
 
   plt.plot(totalrewards)
-  plt.title("Rewards")
-  plt.show()
-
+  plt.title('Reward')
   plot_running_avg(totalrewards)
 
 

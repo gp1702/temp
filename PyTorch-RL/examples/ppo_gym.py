@@ -1,3 +1,9 @@
+import GPUtil
+import datetime
+import os
+DEVICE_ID_LIST = GPUtil.getFirstAvailable()
+DEVICE_ID = DEVICE_ID_LIST[0]
+os.environ["CUDA_VISIBLE_DEVICES"] = str(DEVICE_ID)
 import argparse
 import gym
 import os
@@ -49,7 +55,11 @@ parser.add_argument('--log-interval', type=int, default=1, metavar='N',
                     help='interval between training status logs (default: 10)')
 parser.add_argument('--save-model-interval', type=int, default=0, metavar='N',
                     help="interval between saving model (default: 0, means don't save)")
+parser.add_argument('--use_gpu', action='store_true', default=False,
+                    help=" Use gpu if available ")
 args = parser.parse_args()
+
+use_gpu = args.use_gpu
 
 
 def env_factory(thread_id):

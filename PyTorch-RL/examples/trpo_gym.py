@@ -1,3 +1,7 @@
+import os
+DEVICE_ID_LIST = GPUtil.getFirstAvailable()
+DEVICE_ID = DEVICE_ID_LIST[0]
+os.environ["CUDA_VISIBLE_DEVICES"] = str(DEVICE_ID)
 import argparse
 import gym
 import os
@@ -50,6 +54,8 @@ parser.add_argument('--log-interval', type=int, default=1, metavar='N',
                     help='interval between training status logs (default: 10)')
 parser.add_argument('--save-model-interval', type=int, default=0, metavar='N',
                     help="interval between saving model (default: 0, means don't save)")
+parser.add_argument('--use_gpu', action='store_true', default=False,
+                    help=" Use gpu if available ")
 args = parser.parse_args()
 
 
@@ -59,6 +65,8 @@ def env_factory(thread_id):
     return env
 
 
+use_gpu = args.use_gpu
+
 np.random.seed(args.seed)
 torch.manual_seed(args.seed)
 if use_gpu:
@@ -66,7 +74,7 @@ if use_gpu:
 
 env_dummy = env_factory(0)
 state_dim = env_dummy.observation_space.shape[0]
-is_disc_action = True#len(env_dummy.action_space.shape) == 0
+is_disc_action = True # len(env_dummy.action_space.shape) == 0
 ActionTensor = LongTensor if is_disc_action else DoubleTensor
 
 running_state = ZFilter((state_dim,), clip=5)
@@ -129,10 +137,10 @@ def main_loop():
         
 
         if i_iter%100==0:
-            np.save('All_rewards.npy',all_rewards)
+            np.save('All_rewards_trpo.npy',all_rewards)
     plt.plot(all_rewards)
     plt.title('Average Reward in HIV Environment')
     plt.ylabel('Rewards')
-    plt.savefig("All_Rewards.pdf")
+    plt.savefig("All_Rewards_trpo.pdf")
 
 main_loop()
