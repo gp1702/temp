@@ -1,4 +1,5 @@
 import os
+import GPUtil
 DEVICE_ID_LIST = GPUtil.getFirstAvailable()
 DEVICE_ID = DEVICE_ID_LIST[0]
 os.environ["CUDA_VISIBLE_DEVICES"] = str(DEVICE_ID)
