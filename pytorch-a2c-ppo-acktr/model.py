@@ -182,3 +182,59 @@ class MLPPolicy(Policy):
         hidden_actor = F.tanh(x)
 
         return hidden_critic, hidden_actor, states
+
+
+
+
+
+
+class MLPPolicy_linear(Policy):
+    def __init__(self, num_inputs, action_space):
+        super(MLPPolicy_linear, self).__init__()
+
+        self.action_space = action_space
+
+        self.a_fc1 = nn.Linear(num_inputs, 64)
+        self.a_fc2 = nn.Linear(64, 64)
+
+        self.v_fc1 = nn.Linear(num_inputs, 64)
+        self.v_fc2 = nn.Linear(64, 64)
+
+        self.critic_linear = nn.Linear(64, 1)
+        self.dist = get_distribution(64, action_space)
+
+        self.train()
+        self.reset_parameters()
+
+    @property
+    def state_size(self):
+        return 1
+
+    def reset_parameters(self):
+        self.apply(weights_init_mlp)
+
+        """
+        tanh_gain = nn.init.calculate_gain('tanh')
+        self.a_fc1.weight.data.mul_(tanh_gain)
+        self.a_fc2.weight.data.mul_(tanh_gain)
+        self.v_fc1.weight.data.mul_(tanh_gain)
+        self.v_fc2.weight.data.mul_(tanh_gain)
+        """
+
+        if self.dist.__class__.__name__ == "DiagGaussian":
+            self.dist.fc_mean.weight.data.mul_(0.01)
+
+    def forward(self, inputs, states, masks):
+        x = self.v_fc1(inputs)
+        #x = F.tanh(x)
+
+        x = self.v_fc2(x)
+        hidden_critic = x
+
+        x = self.a_fc1(inputs)
+        #x = F.tanh(x)
+
+        x = self.a_fc2(x)
+        hidden_actor =x
+
+        return hidden_critic, hidden_actor, states

@@ -17,7 +17,7 @@ from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv
 from baselines.common.vec_env.vec_normalize import VecNormalize
 from envs import make_env
 from kfac import KFACOptimizer
-from model import CNNPolicy, MLPPolicy
+from model import CNNPolicy, MLPPolicy, MLPPolicy_linear 
 from storage import RolloutStorage
 from visualize import visdom_plot
 
@@ -73,7 +73,7 @@ def main():
     else:
         assert not args.recurrent_policy, \
             "Recurrent policy is not implemented for the MLP controller"
-        actor_critic = MLPPolicy(obs_shape[0], envs.action_space)
+        actor_critic = MLPPolicy_linear(obs_shape[0], envs.action_space)
 
 
     action_shape = 1
