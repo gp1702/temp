@@ -5,7 +5,10 @@ import gym
 from gym import spaces
 from gym.utils import seeding
 from gym.envs.registration import register
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 
 __copyright__ = "Copyright 2013, RLPy http://acl.mit.edu/RLPy"
 __credits__ = ["Alborz Geramifard", "Robert H. Klein", "Christoph Dann",

@@ -1,3 +1,9 @@
+import GPUtil
+import datetime
+import os
+DEVICE_ID_LIST = GPUtil.getFirstAvailable(order = 'first', maxLoad=0.2, maxMemory=0.01, attempts=1, interval=900, verbose=False)
+DEVICE_ID = DEVICE_ID_LIST[0]
+os.environ["CUDA_VISIBLE_DEVICES"] = str(DEVICE_ID)
 import copy
 import glob
 import os
@@ -20,7 +26,8 @@ from kfac import KFACOptimizer
 from model import CNNPolicy, MLPPolicy, MLPPolicy_linear 
 from storage import RolloutStorage
 from visualize import visdom_plot
-
+import matplotlib
+matplotlib.use('Agg')
 args = get_args()
 
 assert args.algo in ['a2c', 'ppo', 'acktr']
@@ -41,7 +48,7 @@ except OSError:
     for f in files:
         os.remove(f)
 
-
+print(args.cuda)
 def main():
     print("#######")
     print("WARNING: All rewards are clipped or normalized so you need to use a monitor (see envs.py) or visdom plot to get true rewards")

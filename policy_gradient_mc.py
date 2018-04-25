@@ -11,6 +11,8 @@ import os
 import sys
 import numpy as np
 import tensorflow as tf
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from gym import wrappers
 from datetime import datetime
@@ -21,9 +23,11 @@ def plot_running_avg(totalrewards):
     running_avg = np.empty(N)
     for t in range(N):
         running_avg[t] = totalrewards[max(0, t-100):(t+1)].mean()
-    plt.plot(running_avg)
-    plt.title("Running Average")
-    plt.savefig("Average_return_mc.pdf")
+
+    return running_avg
+    # plt.plot(running_avg)
+    # plt.title("Running Average")
+    # plt.savefig("Average_return_mc.pdf")
 
 
 # so you can test different architectures
@@ -215,10 +219,7 @@ def play_one_mc(env, pmodel, vmodel, gamma):
     prev_observation = observation
     observation, reward, done, info = env.step(action)
 
-    # if done:
-    #   reward = -200
-    #
-    # if reward == 1: # if we changed the reward to -200
+
     totalreward += reward
     iters += 1
 
@@ -269,16 +270,25 @@ def main():
   for n in range(N):
     totalreward = play_one_mc(env, pmodel, vmodel, gamma)
     totalrewards[n] = totalreward
-    if n % 100 == 0:
+    if n % 10000 == 0:
       print("episode:", n, "total reward:", totalreward, "avg reward (last 100):", totalrewards[max(0, n-100):(n+1)].mean())
 
-  print("avg reward for last 100 episodes:", totalrewards[-100:].mean())
-  print("total steps:", totalrewards.sum())
+  # print("avg reward for last 100 episodes:", totalrewards[-100:].mean())
+  # print("total steps:", totalrewards.sum())
 
-  plt.plot(totalrewards)
-  plt.title('Reward')
-  plot_running_avg(totalrewards)
+  # plt.plot(totalrewards)
+  # plt.title('Reward')
+  running_avg = plot_running_avg(totalrewards)
+
+  return running_avg
 
 
 if __name__ == '__main__':
-  main()
+    average_returns = []
+    num_exp = 10
+    for i in range(num_exp):
+        print("Run ", i+1)
+        G = main()
+        average_returns.append(G)
+    np.save('policy_gradient_1.npy', average_returns)
+
