@@ -264,7 +264,7 @@ def main():
     monitor_dir = './' + filename + '_' + str(datetime.now())
     env = wrappers.Monitor(env, monitor_dir)
 
-  N = 50000
+  N = 20000
   totalrewards = np.empty(N)
   costs = np.empty(N)
   for n in range(N):
@@ -278,6 +278,7 @@ def main():
 
   # plt.plot(totalrewards)
   # plt.title('Reward')
+
   running_avg = plot_running_avg(totalrewards)
 
   return running_avg
