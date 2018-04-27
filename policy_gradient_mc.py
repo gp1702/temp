@@ -1,4 +1,10 @@
 from __future__ import print_function, division
+# import GPUtil
+# import datetime
+# import os
+# DEVICE_ID_LIST = GPUtil.getFirstAvailable()
+# DEVICE_ID = DEVICE_ID_LIST[0]
+# os.environ["CUDA_VISIBLE_DEVICES"] = str(DEVICE_ID)
 from builtins import range
 import gym
 import os
@@ -17,7 +23,7 @@ def plot_running_avg(totalrewards):
         running_avg[t] = totalrewards[max(0, t-100):(t+1)].mean()
     plt.plot(running_avg)
     plt.title("Running Average")
-    plt.show()
+    plt.savefig("Average_return_mc.jpg")
 
 
 # so you can test different architectures
@@ -138,9 +144,9 @@ class ValueModel:
     self.predict_op = Y_hat
 
     cost = tf.reduce_sum(tf.square(self.Y - Y_hat))
-    # self.train_op = tf.train.AdamOptimizer(1e-2).minimize(cost)
+    self.train_op = tf.train.AdamOptimizer(1e-2).minimize(cost)
     # self.train_op = tf.train.MomentumOptimizer(1e-2, momentum=0.9).minimize(cost)
-    self.train_op = tf.train.GradientDescentOptimizer(1e-4).minimize(cost)
+    # self.train_op = tf.train.GradientDescentOptimizer(1e-4).minimize(cost)
 
   def set_session(self, session):
     self.session = session
@@ -270,11 +276,11 @@ def main():
   print("total steps:", totalrewards.sum())
 
   plt.plot(totalrewards)
-  plt.title("Rewards")
-  plt.show()
-
+  plt.title('Reward')
+  plt.savefig('reward.jpg')
   plot_running_avg(totalrewards)
 
 
 if __name__ == '__main__':
   main()
+
